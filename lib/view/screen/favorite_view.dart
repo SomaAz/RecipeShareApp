@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:recipes_sharing_app/core/controller/favorite_view_controller.dart';
-import 'package:recipes_sharing_app/core/controller/saved_view_controller.dart';
-import 'package:recipes_sharing_app/core/service/firestore_service.dart';
-import 'package:recipes_sharing_app/model/recipe_model.dart';
 import 'package:recipes_sharing_app/view/widget/app_drawer.dart';
 import 'package:recipes_sharing_app/view/widget/favorite_recipe_card.dart';
-import 'package:recipes_sharing_app/view/widget/saved_recipe_card.dart';
 
 class FavoriteView extends GetWidget<FavoriteViewController> {
   const FavoriteView({Key? key}) : super(key: key);

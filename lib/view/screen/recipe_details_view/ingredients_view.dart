@@ -12,8 +12,6 @@ class IngredientsView extends GetWidget<RecipeDetailsViewController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      print(controller);
-
       return Scaffold(
         body: SingleChildScrollView(
           child: Column(
@@ -107,7 +105,6 @@ class IngredientsView extends GetWidget<RecipeDetailsViewController> {
                 padding: const EdgeInsets.only(left: 15, right: 15),
                 child: Column(
                   children: [
-                    SizedBox(height: 15),
                     TextButton(
                       onPressed: () {
                         controller.checkedIngredientsIndexes.clear();
@@ -150,6 +147,7 @@ class IngredientsView extends GetWidget<RecipeDetailsViewController> {
                         );
                       },
                       itemCount: recipe.ingredients.length,
+                      padding: EdgeInsets.zero,
                     ),
                     SizedBox(height: 20),
                     SizedBox(

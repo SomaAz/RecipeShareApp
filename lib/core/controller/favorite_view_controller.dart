@@ -9,6 +9,8 @@ class FavoriteViewController extends GetxController {
 
   // Rx<List<RecipeModel>>  savedRecipes  =
   removeRecipeFromFavorite(String recipeId) async {
+    favoriteRecipes.removeWhere((recipe) => recipe.id == recipeId);
+
     await FirestoreService().removeRecipeFromFavorite(recipeId).then((value) {
       if (!value) {
         print("hellloooooooo");
@@ -18,6 +20,7 @@ class FavoriteViewController extends GetxController {
   }
 
   clearAllFavoriteRecipes() async {
+    favoriteRecipes.clear();
     await FirestoreService()
         .removeAllFavoriteRecipes()
         .then((value) => favoriteRecipes.clear());

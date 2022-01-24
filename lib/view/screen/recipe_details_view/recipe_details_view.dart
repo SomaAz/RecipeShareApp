@@ -46,7 +46,10 @@ class RecipeDetailsView extends GetWidget<RecipeDetailsViewController> {
                       actions: [
                         IconButton(
                           onPressed: () async {
-                            controller.isFavorite.value!
+                            controller.isFavorite.value =
+                                !controller.isFavorite.value!;
+
+                            !controller.isFavorite.value!
                                 ? await FirestoreService()
                                     .removeRecipeFromFavorite(recipe.id)
                                     .then(
@@ -71,7 +74,9 @@ class RecipeDetailsView extends GetWidget<RecipeDetailsViewController> {
                         ),
                         IconButton(
                           onPressed: () async {
-                            controller.isSaved.value!
+                            controller.isSaved.value =
+                                !controller.isSaved.value!;
+                            !controller.isSaved.value!
                                 ? await FirestoreService()
                                     .removeRecipeFromSaved(recipe.id)
                                     .then(

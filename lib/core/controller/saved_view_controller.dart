@@ -8,10 +8,10 @@ class SavedViewController extends GetxController {
   RxList<UserModel> recipesUserData = RxList([]);
   // Rx<List<RecipeModel>>  savedRecipes  =
   removeRecipeFromSaved(String recipeId) async {
+    savedRecipes.removeWhere((recipe) => recipe.id == recipeId);
     await FirestoreService().removeRecipeFromSaved(recipeId).then(
       (value) {
         if (!value) {
-          print("hellloooooooo");
           savedRecipes.removeWhere((recipe) => recipe.id == recipeId);
         }
       },
@@ -19,6 +19,7 @@ class SavedViewController extends GetxController {
   }
 
   clearAllSavedRecipes() async {
+    savedRecipes.clear();
     await FirestoreService()
         .removeAllSavedRecipes()
         .then((value) => savedRecipes.clear());

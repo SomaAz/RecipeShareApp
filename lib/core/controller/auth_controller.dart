@@ -28,7 +28,7 @@ class AuthController extends GetxController {
 
     await FirebaseAuthService().registerUser(_email, _password, _username).then(
       (credential) async {
-        if (image == null) {
+        if (image.value == null) {
           await FirestoreService()
               .addUserToFirestore(
             UserModel(

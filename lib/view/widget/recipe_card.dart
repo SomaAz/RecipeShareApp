@@ -7,7 +7,6 @@ import 'package:recipes_sharing_app/view/screen/recipe_details_view/recipe_detai
 
 class RecipeCard extends StatefulWidget {
   final RecipeModel recipe;
-
   const RecipeCard(
     this.recipe, {
     Key? key,
@@ -22,7 +21,6 @@ class _RecipeCardState extends State<RecipeCard> {
 
   bool? isSaved;
   bool? isFavorite;
-  // final Widget buildWidget = ;
   bool isInited = false;
 
   @override
@@ -49,99 +47,59 @@ class _RecipeCardState extends State<RecipeCard> {
               !isInited) {
             isInited = true;
 
-            // if (userData != null && isSaved != null && isFavorite != null) {
-            //   // print(isSaved);
-            //   // print(isFavorite);
-            //   return _StaticRecipeCard(
-            //     widget.recipe,
-            //     userData: userData!,
-            //     isSaved: isSaved!,
-            //     isFavorite: isFavorite!,
-            //     onFavorite: () async {
-            //       setState(() {
-            //         print(isFavorite);
-            //         isFavorite!
-            //             ? FirestoreService()
-            //                 .removeRecipeFromFavorite(
-            //                   widget.recipe.id,
-            //                 )
-            //                 .then((value) => isFavorite = value)
-            //             : FirestoreService()
-            //                 .addRecipeToFavorite(
-            //                   widget.recipe.id,
-            //                 )
-            //                 .then((value) => isFavorite = value);
-            //       });
-            //     },
-            //     onSaved: () async {
-            //       setState(
-            //         () {
-            //           isSaved!
-            //               ? FirestoreService()
-            //                   .removeRecipeFromSaved(
-            //                     widget.recipe.id,
-            //                   )
-            //                   .then((value) => isSaved = value)
-            //               : FirestoreService()
-            //                   .addRecipeToSaved(
-            //                     widget.recipe.id,
-            //                   )
-            //                   .then((value) => isSaved = value);
-            //         },
-            //       );
-            //     },
-            //   );
-            // }
-
             return Center(
               child: CircularProgressIndicator(),
             );
+          } else {
+            userData = snapshot.data!['userModel'] as UserModel;
+            // isSaved ??=
+            isSaved = snapshot.data!['isSaved'] as bool;
+            // isFavorite ??=
+            isFavorite = snapshot.data!['isFavorite'] as bool;
+
+            return _StaticRecipeCard(
+              widget.recipe,
+              userData: userData!,
+              isSaved: isSaved!,
+              isFavorite: isFavorite!,
+              onFavorite: () async {
+                setState(
+                  () {
+                    isFavorite = !isFavorite!;
+                    !isFavorite!
+                        ? FirestoreService()
+                            .removeRecipeFromFavorite(
+                              widget.recipe.id,
+                            )
+                            .then((value) => isFavorite = value)
+                        : FirestoreService()
+                            .addRecipeToFavorite(
+                              widget.recipe.id,
+                            )
+                            .then((value) => isFavorite = value);
+                  },
+                );
+              },
+              onSaved: () async {
+                setState(
+                  () {
+                    isSaved = !isSaved!;
+                    !isSaved!
+                        ? FirestoreService()
+                            .removeRecipeFromSaved(
+                              widget.recipe.id,
+                            )
+                            .then((value) => isSaved = value)
+                        : FirestoreService()
+                            .addRecipeToSaved(
+                              widget.recipe.id,
+                            )
+                            .then((value) => isSaved = value);
+                  },
+                );
+              },
+            );
           }
-
-          userData = snapshot.data!['userModel'] as UserModel;
-          isSaved = snapshot.data!['isSaved'] as bool;
-          isFavorite = snapshot.data!['isFavorite'] as bool;
-
-          return _StaticRecipeCard(
-            widget.recipe,
-            userData: userData!,
-            isSaved: isSaved!,
-            isFavorite: isFavorite!,
-            onFavorite: () async {
-              setState(
-                () {
-                  isFavorite!
-                      ? FirestoreService()
-                          .removeRecipeFromFavorite(
-                            widget.recipe.id,
-                          )
-                          .then((value) => isFavorite = value)
-                      : FirestoreService()
-                          .addRecipeToFavorite(
-                            widget.recipe.id,
-                          )
-                          .then((value) => isFavorite = value);
-                },
-              );
-            },
-            onSaved: () async {
-              setState(
-                () {
-                  isSaved!
-                      ? FirestoreService()
-                          .removeRecipeFromSaved(
-                            widget.recipe.id,
-                          )
-                          .then((value) => isSaved = value)
-                      : FirestoreService()
-                          .addRecipeToSaved(
-                            widget.recipe.id,
-                          )
-                          .then((value) => isSaved = value);
-                },
-              );
-            },
-          );
         },
       ),
     );
@@ -194,15 +152,11 @@ class _StaticRecipeCard extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                Hero(
-                  tag: recipe.id,
-                  child: ClipRRect(
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(10)),
-                    child: Image.network(
-                      recipe.images[0],
-                      fit: BoxFit.cover,
-                    ),
+                ClipRRect(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+                  child: Image.network(
+                    recipe.images[0],
+                    fit: BoxFit.cover,
                   ),
                 ),
                 // Container(color: Colors.white),
@@ -421,7 +375,7 @@ class _StaticRecipeCard extends StatelessWidget {
     Color? activeColor,
   }) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(Get.mediaQuery.size.width),

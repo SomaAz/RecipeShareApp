@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:recipes_sharing_app/core/service/firebase_auth_service.dart';
 import 'package:recipes_sharing_app/model/cateogry_model.dart';
 import 'package:recipes_sharing_app/model/recipe_model.dart';
@@ -251,6 +252,43 @@ class FirestoreService {
           }
         },
       ));
+    } catch (e) {
+      print(e);
+      return Future.error(e);
+    }
+  }
+
+  Future<List<RecipeModel>> getAllRecipesOfCategory(
+      CategoryModel category) async {
+    try {
+      return (await _recipesCollection
+              .where("category", isEqualTo: category.name)
+              .get())
+          .docs
+          .map((doc) => RecipeModel.fromJson(doc.data()))
+          .toList();
+    } catch (e) {
+      print(e);
+      return Future.error(e);
+    }
+  }
+
+  Future<List<RecipeModel>> getPopularRecipes() async {
+    try {
+      final recipes = (await _recipesCollection.get())
+          .docs
+          .map(
+            (doc) => RecipeModel.fromJson(doc.data()),
+          )
+          .toList();
+
+      final popularRecipes = recipes.where(
+        (recipe) {
+          return recipe.favorites > recipes.map((e) => e.favorites).average;
+        },
+      ).toList();
+
+      return popularRecipes;
     } catch (e) {
       print(e);
       return Future.error(e);

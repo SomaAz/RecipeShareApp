@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:recipes_sharing_app/core/service/firestore_service.dart';
 import 'package:recipes_sharing_app/model/recipe_model.dart';
 import 'package:recipes_sharing_app/model/user_model.dart';
 
@@ -8,7 +7,7 @@ class FavoriteRecipeCard extends StatelessWidget {
   final RecipeModel recipe;
   final UserModel userData;
   final void Function() onDelete;
-  FavoriteRecipeCard(
+  const FavoriteRecipeCard(
     this.recipe, {
     Key? key,
     required this.onDelete,
