@@ -49,23 +49,6 @@ class FirestoreService {
 
       final recipes = docs.map((doc) {
         Map<String, dynamic> data = doc.data();
-        // data['cookTime'] = Duration(seconds: data['cookTime']);
-        // data['images'] = (data['images'] as List).cast<String>();
-        // data['tags'] = (data['tags'] as List).cast<String>();
-        // data['steps'] = (data['steps'] as List).cast<String>();
-        // data['priceRange'] = RangeValues(
-        //   double.parse((data['priceRange'] as String).split("-")[0]),
-        //   double.parse((data['priceRange'] as String).split("-")[1]),
-        // );
-        // data['ingredients'] =
-        //     (data['ingredients'] as List).cast<String>().map((ing) {
-        //   final ingList = ing.split(">");
-
-        //   return {
-        //     "ingredient": ingList[0],
-        //     "quantity": ingList[1],
-        //   };
-        // }).toList();
         return RecipeModel.fromJson(data);
       }).toList();
       return recipes;
@@ -105,7 +88,8 @@ class FirestoreService {
               .collection("saved")
               .get())
           .docs
-          .map((doc) => doc.id)
+          .where((doc) => doc.exists && doc.data()["id"].toString().isNotEmpty)
+          .map((doc) => doc.data()["id"])
           .toList();
       final List<RecipeModel> recipes = [];
       for (String id in ids) {
@@ -139,11 +123,15 @@ class FirestoreService {
 
   Future<bool> addRecipeToSaved(String recipeId) async {
     try {
-      return _usersCollection
-          .doc(await FirebaseAuthService().getCurrentUserUid())
-          .collection("saved")
-          .doc(recipeId)
-          .set({"id": recipeId}).then((value) => true);
+      final isSaved = await checkIfRecipeIsInSaved(recipeId);
+      if (!isSaved) {
+        final userDocRef = _usersCollection
+            .doc(await FirebaseAuthService().getCurrentUserUid())
+            .collection("saved")
+            .doc(recipeId);
+        return await userDocRef.set({"id": recipeId}).then((_) => true);
+      }
+      return false;
     } catch (e) {
       print(e);
       return Future.error(e);
@@ -152,12 +140,13 @@ class FirestoreService {
 
   Future<bool> removeRecipeFromSaved(String recipeId) async {
     try {
-      return _usersCollection
+      return await _usersCollection
           .doc(await FirebaseAuthService().getCurrentUserUid())
           .collection("saved")
           .doc(recipeId)
-          .delete()
-          .then((value) => false);
+          .set({"id": ""}).then(
+        (_) => false,
+      );
     } catch (e) {
       print(e);
       return Future.error(e);
@@ -166,12 +155,14 @@ class FirestoreService {
 
   Future<bool> checkIfRecipeIsInSaved(String recipeId) async {
     try {
-      return (await _usersCollection
-              .doc(await FirebaseAuthService().getCurrentUserUid())
-              .collection("saved")
-              .doc(recipeId)
-              .get())
-          .exists;
+      final ref = (_usersCollection
+          .doc(await FirebaseAuthService().getCurrentUserUid())
+          .collection("saved")
+          .doc(recipeId));
+      final snapshot = await ref.get();
+      return snapshot.exists
+          ? snapshot.data()!["id"].toString().isNotEmpty
+          : false;
     } catch (e) {
       print(e);
       return Future.error(e);
@@ -185,7 +176,8 @@ class FirestoreService {
               .collection("favorite")
               .get())
           .docs
-          .map((doc) => doc.id)
+          .where((doc) => doc.exists && doc.data()["id"].toString().isNotEmpty)
+          .map((doc) => doc.data()["id"])
           .toList();
       final List<RecipeModel> recipes = [];
       for (String id in ids) {
@@ -200,11 +192,21 @@ class FirestoreService {
 
   Future<bool> addRecipeToFavorite(String recipeId) async {
     try {
-      return _usersCollection
-          .doc(await FirebaseAuthService().getCurrentUserUid())
-          .collection("favorite")
-          .doc(recipeId)
-          .set({"id": recipeId}).then((value) => true);
+      final recipeRef = _recipesCollection.doc(recipeId);
+      final isFavorite = await checkIfRecipeIsInFavorite(recipeId);
+      if (!isFavorite) {
+        final userDocRef = _usersCollection
+            .doc(await FirebaseAuthService().getCurrentUserUid())
+            .collection("favorite")
+            .doc(recipeId);
+        return await userDocRef.set({"id": recipeId}).then(
+          (value) async {
+            await recipeRef.update({"favorites": FieldValue.increment(1)});
+            return true;
+          },
+        );
+      }
+      return false;
     } catch (e) {
       print(e);
       return Future.error(e);
@@ -213,12 +215,22 @@ class FirestoreService {
 
   Future<bool> removeRecipeFromFavorite(String recipeId) async {
     try {
-      return _usersCollection
+      final recipeRef = _recipesCollection.doc(recipeId);
+
+      return await _usersCollection
           .doc(await FirebaseAuthService().getCurrentUserUid())
           .collection("favorite")
           .doc(recipeId)
-          .delete()
-          .then((value) => false);
+          .set({"id": ""}).then(
+        (value) async {
+          final numberOfFavorites =
+              (await recipeRef.get()).data()!["favorites"];
+          if (numberOfFavorites > 0) {
+            await recipeRef.update({"favorites": FieldValue.increment(-1)});
+          }
+          return false;
+        },
+      );
     } catch (e) {
       print(e);
       return Future.error(e);
@@ -227,12 +239,14 @@ class FirestoreService {
 
   Future<bool> checkIfRecipeIsInFavorite(String recipeId) async {
     try {
-      return (await _usersCollection
-              .doc(await FirebaseAuthService().getCurrentUserUid())
-              .collection("favorite")
-              .doc(recipeId)
-              .get())
-          .exists;
+      final ref = (_usersCollection
+          .doc(await FirebaseAuthService().getCurrentUserUid())
+          .collection("favorite")
+          .doc(recipeId));
+      final snapshot = await ref.get();
+      return snapshot.exists
+          ? snapshot.data()!["id"].toString().isNotEmpty
+          : false;
     } catch (e) {
       print(e);
       return Future.error(e);
@@ -295,3 +309,7 @@ class FirestoreService {
     }
   }
 }
+
+// //todo: change the system of favorite and saved recipes to the recipe itself
+// //todo: make it depend on adding the name of the users that are
+// //todo: favoring or saving the recipe in an array in the recipe document

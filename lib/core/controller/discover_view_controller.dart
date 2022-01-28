@@ -30,8 +30,6 @@ class DiscoverViewController extends GetxController {
       );
       _latestRecipes = RxList(
         recipes.where((recipe) {
-          print(
-              recipe.timePublished.toDate().difference(DateTime.now()).inHours);
           return DateTime.now()
                   .difference(recipe.timePublished.toDate())
                   .inHours <=

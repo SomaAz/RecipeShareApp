@@ -9,6 +9,8 @@ class RecipeModel {
   final String publisherId;
   final int serves;
   final int favorites;
+  // final List<String> favorites;
+  // final List<String> saves;
   final RangeValues priceRange;
   final Timestamp timePublished;
   final Duration cookTime;
@@ -26,6 +28,7 @@ class RecipeModel {
     required this.priceRange,
     required this.serves,
     required this.favorites,
+    // required this.saves,
     required this.timePublished,
     required this.cookTime,
     required this.images,
@@ -61,6 +64,7 @@ class RecipeModel {
       priceRange: data["priceRange"],
       serves: data["serves"],
       favorites: data["favorites"],
+      // saves: data["saves"],
       timePublished: data["timePublished"],
       cookTime: data["cookTime"],
       images: data["images"],
@@ -80,6 +84,7 @@ class RecipeModel {
       "priceRange": priceRange,
       "serves": serves,
       "favorites": favorites,
+      // "saves": saves,
       "timePublished": timePublished,
       "cookTime": cookTime,
       "images": images,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:recipes_sharing_app/core/controller/discover_view_controller.dart';
+import 'package:recipes_sharing_app/view/screen/all_categories_view.dart';
 import 'package:recipes_sharing_app/view/screen/popular_recipes_view.dart';
 import 'package:recipes_sharing_app/view/widget/app_drawer.dart';
 import 'package:recipes_sharing_app/view/widget/category_card.dart';
@@ -22,8 +23,13 @@ class DiscoverView extends GetWidget<DiscoverViewController> {
         }
         if (snapshot.hasError) {
           print(snapshot.error);
-          return Center(
-            child: Text("Oops! There is an error happend,try again"),
+          return Scaffold(
+            body: RefreshIndicator(
+              onRefresh: () async => controller.updateData(),
+              child: Center(
+                child: Text("Oops! There is an error happend,try again"),
+              ),
+            ),
           );
         }
         return Scaffold(
@@ -55,8 +61,9 @@ class DiscoverView extends GetWidget<DiscoverViewController> {
             return RefreshIndicator(
               onRefresh: () async => controller.updateData(),
               child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 15, right: 15, top: 20),
+                  padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -108,8 +115,21 @@ class DiscoverView extends GetWidget<DiscoverViewController> {
                           ],
                         ),
                       ),
-                      // SizedBox(height: 25),
-                      buildSubtitle("Categories"),
+                      SizedBox(height: 25),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          buildSubtitle("Categories"),
+                          TextButton(
+                            onPressed: controller.popularRecipes.isEmpty
+                                ? null
+                                : () {
+                                    Get.to(() => AllCategoriesView());
+                                  },
+                            child: Text("See All"),
+                          ),
+                        ],
+                      ),
                       SizedBox(height: 20),
                       SizedBox(
                         height: Get.mediaQuery.size.width * .22,
@@ -130,9 +150,11 @@ class DiscoverView extends GetWidget<DiscoverViewController> {
                         children: [
                           buildSubtitle("Popular Recipes"),
                           TextButton(
-                            onPressed: () {
-                              Get.to(() => PopularRecipesView());
-                            },
+                            onPressed: controller.popularRecipes.isEmpty
+                                ? null
+                                : () {
+                                    Get.to(() => PopularRecipesView());
+                                  },
                             child: Text(
                               "+${controller.popularRecipes.length} All",
                             ),
@@ -140,29 +162,46 @@ class DiscoverView extends GetWidget<DiscoverViewController> {
                         ],
                       ),
                       SizedBox(height: 10),
-                      SizedBox(
-                        height: Get.mediaQuery.size.width * .35,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (_, index) {
-                            return PopularRecipeCard(
-                              controller.popularRecipes[index],
-                            );
-                          },
-                          separatorBuilder: (_, index) {
-                            return SizedBox(width: 10);
-                          },
-                          itemCount: controller.popularRecipes.length < 12
-                              ? controller.popularRecipes.length
-                              : 12,
-                        ),
-                      ),
+                      controller.popularRecipes.isEmpty
+                          ? Center(
+                              child: Text(
+                                "There are no popular recipes",
+                                style: TextStyle(
+                                  color: Colors.grey.shade700,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            )
+                          : SizedBox(
+                              height: Get.mediaQuery.size.width * .35,
+                              child: ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (_, index) {
+                                  return PopularRecipeCard(
+                                    controller.popularRecipes[index],
+                                  );
+                                },
+                                separatorBuilder: (_, index) {
+                                  return SizedBox(width: 10);
+                                },
+                                itemCount: controller.popularRecipes.length < 12
+                                    ? controller.popularRecipes.length
+                                    : 12,
+                              ),
+                            ),
                       SizedBox(height: 25),
                       buildSubtitle("Latest Recipes"),
                       SizedBox(height: 20),
                       controller.latestRecipes.isEmpty
                           ? Center(
-                              child: Text("There is no recipes added recently"))
+                              child: Text(
+                                "There are no recipes added recently",
+                                style: TextStyle(
+                                  color: Colors.grey.shade700,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            )
                           : ListView.separated(
                               // scrollDirection: Axis.vertical,
                               shrinkWrap: true,

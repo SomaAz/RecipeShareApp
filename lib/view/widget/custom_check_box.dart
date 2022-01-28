@@ -26,7 +26,7 @@ class CustomCheckBox extends StatelessWidget {
           child: InkWell(
             onTap: () => onChanged(!value),
             child: Container(
-              margin: EdgeInsets.symmetric(vertical: 8),
+              // margin: EdgeInsets.symmetric(vertical: 8),
               padding: EdgeInsets.all(4),
               height: 30,
               width: 30,

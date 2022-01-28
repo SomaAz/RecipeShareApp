@@ -132,7 +132,7 @@ class CookingView extends GetWidget<RecipeDetailsViewController> {
                         style: TextStyle(color: Colors.red),
                       ),
                     ),
-                    ListView.builder(
+                    ListView.separated(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (_, index) {
@@ -147,8 +147,27 @@ class CookingView extends GetWidget<RecipeDetailsViewController> {
                             } else {
                               controller.checkedStepsIndexes.add(index);
                             }
-                            print(controller.checkedStepsIndexes);
                           },
+                        );
+                      },
+                      separatorBuilder: (_, index) {
+                        // return SizedBox();
+                        return Container(
+                          height: 30,
+                          width: 30,
+                          padding: const EdgeInsets.only(left: 10),
+                          // color: Colors.blue,
+                          alignment: Alignment.centerLeft,
+                          child: VerticalDivider(
+                            thickness: 2,
+                            indent: 0,
+                            width: 10,
+                            color:
+                                controller.checkedStepsIndexes.contains(index)
+                                    ? Get.theme.primaryColor
+                                    : Colors.grey.shade600,
+                            // color: Colors. ,
+                          ),
                         );
                       },
                       itemCount: recipe.steps.length,
@@ -167,7 +186,6 @@ class CookingView extends GetWidget<RecipeDetailsViewController> {
                               middleText:
                                   "You haven't finish all the steps, you have just finished ${controller.checkedStepsIndexes.length}/${recipe.steps.length} steps",
                               onConfirm: () {
-                                print("confirm");
                                 Get.back();
                                 Get.back();
                               },

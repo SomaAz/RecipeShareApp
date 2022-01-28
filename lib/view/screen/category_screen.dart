@@ -16,46 +16,48 @@ class CategoryScreen extends StatelessWidget {
         elevation: 0,
       ),
       body: FutureBuilder(
-          future: FirestoreService().getAllRecipesOfCategory(category),
-          builder: (_, AsyncSnapshot<List<RecipeModel>> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            final recipes = snapshot.data!;
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "\"${category.name.replaceFirst(category.name[0], category.name[0].toUpperCase())}\" Recipes",
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.grey.shade900,
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    ListView.separated(
-                      // scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (_, index) {
-                        return RecipeCard(recipes[index]);
-                      },
-                      separatorBuilder: (_, index) {
-                        return SizedBox(height: 20);
-                      },
-                      itemCount: recipes.length,
-                    ),
-                  ],
-                ),
-              ),
+        future: FirestoreService().getAllRecipesOfCategory(category),
+        builder: (_, AsyncSnapshot<List<RecipeModel>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
             );
-          }),
+          }
+          final recipes = snapshot.data!;
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "\"${category.name.replaceFirst(category.name[0], category.name[0].toUpperCase())}\" Recipes",
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey.shade900,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  ListView.separated(
+                    // scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (_, index) {
+                      return RecipeCard(recipes[index]);
+                    },
+                    separatorBuilder: (_, index) {
+                      return SizedBox(height: 20);
+                    },
+                    itemCount: recipes.length,
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

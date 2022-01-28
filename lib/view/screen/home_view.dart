@@ -21,7 +21,8 @@ class HomeView extends GetWidget<HomeViewController> {
           bottomNavigationBar: BottomNavigationBar(
             showSelectedLabels: false,
             showUnselectedLabels: false,
-            iconSize: 28,
+            iconSize: 27,
+            unselectedItemColor: Colors.black87,
             currentIndex: controller.selectedScreenIndex,
             onTap: (val) => controller.setSelectedScreenIndex(val),
             type: BottomNavigationBarType.fixed,

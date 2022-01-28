@@ -39,7 +39,7 @@ class SavedView extends GetWidget<SavedViewController> {
               elevation: 0,
             ),
             body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
               child: SingleChildScrollView(
                 child: Column(
                   children: [

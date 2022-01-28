@@ -356,14 +356,18 @@ class _StaticRecipeCard extends StatelessWidget {
 
   String getTimeSincePublished() {
     final difference = DateTime.now().difference(recipe.timePublished.toDate());
-    if (difference.inHours <= 0) {
-      if (difference.inMinutes <= 0) {
-        return "${difference.inSeconds}secs ago";
+    if (difference.inDays <= 0) {
+      if (difference.inHours <= 0) {
+        if (difference.inMinutes <= 0) {
+          return "${difference.inSeconds}secs ago";
+        } else {
+          return "${difference.inMinutes}min ago";
+        }
       } else {
-        return "${difference.inMinutes}min ago";
+        return "${difference.inHours}hrs ago";
       }
     } else {
-      return "${difference.inHours}hrs ago";
+      return "${difference.inDays}days ago";
     }
   }
 

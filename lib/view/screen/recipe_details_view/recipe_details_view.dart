@@ -52,16 +52,13 @@ class RecipeDetailsView extends GetWidget<RecipeDetailsViewController> {
                             !controller.isFavorite.value!
                                 ? await FirestoreService()
                                     .removeRecipeFromFavorite(recipe.id)
-                                    .then(
-                                      (value) =>
-                                          controller.isFavorite.value = value,
-                                    )
+                                // .then(
+                                //   (value) =>
+                                //       controller.isFavorite.value = value,
+                                // )
                                 : await FirestoreService()
-                                    .addRecipeToFavorite(recipe.id)
-                                    .then(
-                                      (value) =>
-                                          controller.isFavorite.value = value,
-                                    );
+                                    .addRecipeToFavorite(recipe.id);
+                            // .
                           },
                           icon: Icon(
                             controller.isFavorite.value!
@@ -79,16 +76,16 @@ class RecipeDetailsView extends GetWidget<RecipeDetailsViewController> {
                             !controller.isSaved.value!
                                 ? await FirestoreService()
                                     .removeRecipeFromSaved(recipe.id)
-                                    .then(
-                                      (value) =>
-                                          controller.isSaved.value = value,
-                                    )
+                                // .then(
+                                //   (value) =>
+                                //       controller.isSaved.value = value,
+                                // )
                                 : await FirestoreService()
-                                    .addRecipeToSaved(recipe.id)
-                                    .then(
-                                      (value) =>
-                                          controller.isSaved.value = value,
-                                    );
+                                    .addRecipeToSaved(recipe.id);
+                            // .then(
+                            //   (value) =>
+                            //       controller.isSaved.value = value,
+                            // );
                             // controller.update();
                           },
                           icon: Icon(
@@ -234,7 +231,7 @@ class RecipeDetailsView extends GetWidget<RecipeDetailsViewController> {
                                     ),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
-                                        print('Privacy Policy"');
+                                        Get.to(() => CookingView(recipe));
                                       },
                                   ),
                                 ],
@@ -319,14 +316,18 @@ class RecipeDetailsView extends GetWidget<RecipeDetailsViewController> {
 
   String getTimeSincePublished() {
     final difference = DateTime.now().difference(recipe.timePublished.toDate());
-    if (difference.inHours <= 0) {
-      if (difference.inMinutes <= 0) {
-        return "${difference.inSeconds}secs ago";
+    if (difference.inDays <= 0) {
+      if (difference.inHours <= 0) {
+        if (difference.inMinutes <= 0) {
+          return "${difference.inSeconds}secs ago";
+        } else {
+          return "${difference.inMinutes}min ago";
+        }
       } else {
-        return "${difference.inMinutes}min ago";
+        return "${difference.inHours}hrs ago";
       }
     } else {
-      return "${difference.inHours}hrs ago";
+      return "${difference.inDays}days ago";
     }
   }
 

@@ -56,7 +56,7 @@ class AppDrawer extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               leading: Icon(Icons.logout_outlined),
-            )
+            ),
           ],
         ),
       ),

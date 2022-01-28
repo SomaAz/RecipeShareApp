@@ -114,7 +114,7 @@ class IngredientsView extends GetWidget<RecipeDetailsViewController> {
                         style: TextStyle(color: Colors.red),
                       ),
                     ),
-                    ListView.builder(
+                    ListView.separated(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (_, index) {
@@ -140,14 +140,30 @@ class IngredientsView extends GetWidget<RecipeDetailsViewController> {
                             } else {
                               controller.checkedIngredientsIndexes.add(index);
                             }
-                            // controller.update();
-
-                            print(controller.checkedIngredientsIndexes);
                           },
                         );
                       },
                       itemCount: recipe.ingredients.length,
                       padding: EdgeInsets.zero,
+                      separatorBuilder: (context, index) {
+                        return Container(
+                          height: 30,
+                          width: 30,
+                          padding: const EdgeInsets.only(left: 10),
+                          // color: Colors.blue,
+                          alignment: Alignment.centerLeft,
+                          child: VerticalDivider(
+                            thickness: 2,
+                            indent: 0,
+                            width: 10,
+                            color: controller.checkedIngredientsIndexes
+                                    .contains(index)
+                                ? Get.theme.primaryColor
+                                : Colors.grey.shade600,
+                            // color: Colors. ,
+                          ),
+                        );
+                      },
                     ),
                     SizedBox(height: 20),
                     SizedBox(
