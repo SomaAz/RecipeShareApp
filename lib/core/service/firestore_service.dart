@@ -15,17 +15,15 @@ class FirestoreService {
       await _usersCollection.doc(user.uid).set(user.toJson());
     } catch (e) {
       print(e);
-      rethrow;
+      return Future.error(e);
     }
   }
 
   Future<UserModel> getUserData(String uid) async {
     try {
-      final userData = (await _usersCollection.doc(uid).get()).data()!;
-
-      return UserModel.fromJson(
-        userData,
-      );
+      final userData = (await _usersCollection.doc(uid.trim()).get()).data();
+      final model = UserModel.fromJson(userData!);
+      return model;
     } catch (e) {
       print(e);
 
@@ -35,7 +33,7 @@ class FirestoreService {
 
   Future<UserModel> getCurrentUserData() async {
     try {
-      final currentUid = await FirebaseAuthService().getCurrentUserUid();
+      final currentUid = FirebaseAuthService().getCurrentUserUid();
       return await getUserData(currentUid);
     } catch (e) {
       print(e);
@@ -84,7 +82,7 @@ class FirestoreService {
   Future<List<RecipeModel>> getAllSavedRecipes() async {
     try {
       final ids = (await _usersCollection
-              .doc(await FirebaseAuthService().getCurrentUserUid())
+              .doc(FirebaseAuthService().getCurrentUserUid())
               .collection("saved")
               .get())
           .docs
@@ -105,7 +103,7 @@ class FirestoreService {
   Future<void> removeAllSavedRecipes() async {
     try {
       (await _usersCollection
-          .doc(await FirebaseAuthService().getCurrentUserUid())
+          .doc(FirebaseAuthService().getCurrentUserUid())
           .collection("saved")
           .get()
           .then(
@@ -126,7 +124,7 @@ class FirestoreService {
       final isSaved = await checkIfRecipeIsInSaved(recipeId);
       if (!isSaved) {
         final userDocRef = _usersCollection
-            .doc(await FirebaseAuthService().getCurrentUserUid())
+            .doc(FirebaseAuthService().getCurrentUserUid())
             .collection("saved")
             .doc(recipeId);
         return await userDocRef.set({"id": recipeId}).then((_) => true);
@@ -141,7 +139,7 @@ class FirestoreService {
   Future<bool> removeRecipeFromSaved(String recipeId) async {
     try {
       return await _usersCollection
-          .doc(await FirebaseAuthService().getCurrentUserUid())
+          .doc(FirebaseAuthService().getCurrentUserUid())
           .collection("saved")
           .doc(recipeId)
           .set({"id": ""}).then(
@@ -156,7 +154,7 @@ class FirestoreService {
   Future<bool> checkIfRecipeIsInSaved(String recipeId) async {
     try {
       final ref = (_usersCollection
-          .doc(await FirebaseAuthService().getCurrentUserUid())
+          .doc(FirebaseAuthService().getCurrentUserUid())
           .collection("saved")
           .doc(recipeId));
       final snapshot = await ref.get();
@@ -172,7 +170,7 @@ class FirestoreService {
   Future<List<RecipeModel>> getAllFavoriteRecipes() async {
     try {
       final ids = (await _usersCollection
-              .doc(await FirebaseAuthService().getCurrentUserUid())
+              .doc(FirebaseAuthService().getCurrentUserUid())
               .collection("favorite")
               .get())
           .docs
@@ -196,7 +194,7 @@ class FirestoreService {
       final isFavorite = await checkIfRecipeIsInFavorite(recipeId);
       if (!isFavorite) {
         final userDocRef = _usersCollection
-            .doc(await FirebaseAuthService().getCurrentUserUid())
+            .doc(FirebaseAuthService().getCurrentUserUid())
             .collection("favorite")
             .doc(recipeId);
         return await userDocRef.set({"id": recipeId}).then(
@@ -218,7 +216,7 @@ class FirestoreService {
       final recipeRef = _recipesCollection.doc(recipeId);
 
       return await _usersCollection
-          .doc(await FirebaseAuthService().getCurrentUserUid())
+          .doc(FirebaseAuthService().getCurrentUserUid())
           .collection("favorite")
           .doc(recipeId)
           .set({"id": ""}).then(
@@ -240,7 +238,7 @@ class FirestoreService {
   Future<bool> checkIfRecipeIsInFavorite(String recipeId) async {
     try {
       final ref = (_usersCollection
-          .doc(await FirebaseAuthService().getCurrentUserUid())
+          .doc(FirebaseAuthService().getCurrentUserUid())
           .collection("favorite")
           .doc(recipeId));
       final snapshot = await ref.get();
@@ -256,7 +254,7 @@ class FirestoreService {
   Future<void> removeAllFavoriteRecipes() async {
     try {
       (await _usersCollection
-          .doc(await FirebaseAuthService().getCurrentUserUid())
+          .doc(FirebaseAuthService().getCurrentUserUid())
           .collection("favorite")
           .get()
           .then(
@@ -303,6 +301,33 @@ class FirestoreService {
       ).toList();
 
       return popularRecipes;
+    } catch (e) {
+      print(e);
+      return Future.error(e);
+    }
+  }
+
+  Future<List<RecipeModel>> getAllPostedRecipesOfUser(String uid) async {
+    try {
+      final snapshot = await _firestore
+          .collection("recipes")
+          .where("publisherId", isEqualTo: uid.trim())
+          .orderBy("timePublished", descending: true)
+          .get();
+      return snapshot.docs
+          .map((doc) => RecipeModel.fromJson(doc.data()))
+          .toList();
+    } catch (e) {
+      print(e);
+      return Future.error(e);
+    }
+  }
+
+  Future<List<RecipeModel>> getAllPostedRecipesOfCurrentUser() async {
+    try {
+      return await getAllPostedRecipesOfUser(
+        FirebaseAuthService().getCurrentUserUid(),
+      );
     } catch (e) {
       print(e);
       return Future.error(e);

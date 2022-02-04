@@ -53,7 +53,7 @@ class IngredientsView extends GetWidget<RecipeDetailsViewController> {
                                   recipe.name,
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 26,
+                                    fontSize: 28,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

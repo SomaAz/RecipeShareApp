@@ -50,7 +50,7 @@ class FavoriteView extends GetWidget<FavoriteViewController> {
                         Text(
                           "Favorite Recipes",
                           style: TextStyle(
-                            fontSize: 26,
+                            fontSize: 28,
                             fontWeight: FontWeight.w600,
                             color: Colors.grey.shade900,
                           ),

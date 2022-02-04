@@ -33,7 +33,7 @@ class CategoryScreen extends StatelessWidget {
                   Text(
                     "\"${category.name.replaceFirst(category.name[0], category.name[0].toUpperCase())}\" Recipes",
                     style: TextStyle(
-                      fontSize: 26,
+                      fontSize: 28,
                       fontWeight: FontWeight.w600,
                       color: Colors.grey.shade900,
                     ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:recipes_sharing_app/core/controller/discover_view_controller.dart';
+import 'package:recipes_sharing_app/core/controller/home_view_controller.dart';
 import 'package:recipes_sharing_app/view/screen/all_categories_view.dart';
 import 'package:recipes_sharing_app/view/screen/popular_recipes_view.dart';
 import 'package:recipes_sharing_app/view/widget/app_drawer.dart';
@@ -38,7 +39,9 @@ class DiscoverView extends GetWidget<DiscoverViewController> {
             elevation: 0,
             actions: [
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.put(HomeViewController()).setSelectedScreenIndex(3);
+                },
                 child: controller.currentUser == null
                     ? SizedBox()
                     : SizedBox(
@@ -70,7 +73,7 @@ class DiscoverView extends GetWidget<DiscoverViewController> {
                       Text(
                         "Discover Recipes",
                         style: TextStyle(
-                          fontSize: 26,
+                          fontSize: 28,
                           fontWeight: FontWeight.w600,
                           color: Colors.grey.shade900,
                         ),
@@ -121,11 +124,9 @@ class DiscoverView extends GetWidget<DiscoverViewController> {
                         children: [
                           buildSubtitle("Categories"),
                           TextButton(
-                            onPressed: controller.popularRecipes.isEmpty
-                                ? null
-                                : () {
-                                    Get.to(() => AllCategoriesView());
-                                  },
+                            onPressed: () {
+                              Get.to(() => AllCategoriesView());
+                            },
                             child: Text("See All"),
                           ),
                         ],

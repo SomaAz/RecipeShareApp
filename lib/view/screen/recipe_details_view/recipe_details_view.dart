@@ -7,6 +7,7 @@ import 'package:recipes_sharing_app/core/controller/recipe_details_view_controll
 import 'package:recipes_sharing_app/core/service/firestore_service.dart';
 import 'package:recipes_sharing_app/model/recipe_model.dart';
 import 'package:recipes_sharing_app/model/user_model.dart';
+import 'package:recipes_sharing_app/view/screen/profile_view.dart';
 import 'package:recipes_sharing_app/view/screen/recipe_details_view/cooking_view.dart';
 import 'package:recipes_sharing_app/view/screen/recipe_details_view/ingredients_view.dart';
 import 'package:recipes_sharing_app/view/widget/custom_buttons.dart';
@@ -108,7 +109,7 @@ class RecipeDetailsView extends GetWidget<RecipeDetailsViewController> {
                             Text(
                               recipe.name,
                               style: const TextStyle(
-                                fontSize: 26,
+                                fontSize: 28,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -126,30 +127,35 @@ class RecipeDetailsView extends GetWidget<RecipeDetailsViewController> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 34,
-                                      height: 34,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(
-                                          Get.mediaQuery.size.width,
-                                        ),
-                                        child: Image.network(
-                                          userData!.imageUrl,
-                                          fit: BoxFit.cover,
+                                InkWell(
+                                  onTap: () {
+                                    Get.to(() => ProfileView(userData!.uid));
+                                  },
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 34,
+                                        height: 34,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            Get.mediaQuery.size.width,
+                                          ),
+                                          child: Image.network(
+                                            userData!.imageUrl,
+                                            fit: BoxFit.cover,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(width: 6),
-                                    Text(
-                                      userData!.username,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.grey.shade900,
+                                      SizedBox(width: 6),
+                                      Text(
+                                        userData!.username,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.grey.shade900,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                                 SizedBox(width: 12),
                                 Text(
@@ -211,8 +217,48 @@ class RecipeDetailsView extends GetWidget<RecipeDetailsViewController> {
                               ),
                             ),
                             SizedBox(height: 20),
+                            buildSubtitleText("Details"),
+                            Text(
+                              "serves: ${recipe.serves}",
+                              style: TextStyle(
+                                color: Colors.grey.shade800,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Text(
+                              "cooking time: ${recipe.cookTime.inMinutes}min",
+                              style: TextStyle(
+                                color: Colors.grey.shade800,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            Row(
+                              // crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "price range: ",
+                                  style: TextStyle(
+                                    color: Colors.grey.shade800,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                // SizedBox(width: 4),
+                                Text(
+                                  "${recipe.priceRange.start.toInt()}\$-${recipe.priceRange.end.toInt()}\$",
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 20),
+
                             buildSubtitleText("Cooking Steps"),
-                            SizedBox(height: 6),
+                            // SizedBox(height: 6),
                             RichText(
                               text: TextSpan(
                                 children: [
@@ -332,9 +378,7 @@ class RecipeDetailsView extends GetWidget<RecipeDetailsViewController> {
   }
 
   Future<Map> getData() async {
-    print(userData == null);
     final ud = await FirestoreService().getUserData(recipe.publisherId);
-    print(ud.username);
     return {
       "userData": ud,
       "isSaved": await FirestoreService().checkIfRecipeIsInSaved(recipe.id),

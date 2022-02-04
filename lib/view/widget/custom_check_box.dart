@@ -18,13 +18,14 @@ class CustomCheckBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Flex(
-      direction: Axis.horizontal,
-      children: [
-        Flexible(
-          flex: 0,
-          child: InkWell(
-            onTap: () => onChanged(!value),
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: () => onChanged(!value),
+      child: Flex(
+        direction: Axis.horizontal,
+        children: [
+          Flexible(
+            flex: 0,
             child: Container(
               // margin: EdgeInsets.symmetric(vertical: 8),
               padding: EdgeInsets.all(4),
@@ -46,10 +47,10 @@ class CustomCheckBox extends StatelessWidget {
               ),
             ),
           ),
-        ),
-        Flexible(flex: 0, child: SizedBox(width: 15)),
-        Flexible(child: child ?? Text(text)),
-      ],
+          Flexible(flex: 0, child: SizedBox(width: 15)),
+          Flexible(child: child ?? Text(text)),
+        ],
+      ),
     );
   }
 }

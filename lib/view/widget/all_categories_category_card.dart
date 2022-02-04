@@ -36,8 +36,8 @@ class AllCategoriesCategoryCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15),
               ),
               padding: const EdgeInsets.symmetric(
-                horizontal: 10,
-                vertical: 6,
+                horizontal: 15,
+                vertical: 8,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

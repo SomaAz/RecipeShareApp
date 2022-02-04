@@ -36,6 +36,7 @@ class AuthController extends GetxController {
               username: _username,
               email: _email,
               imageUrl: "",
+              posts: 0,
             ),
           )
               .then((value) {
@@ -57,6 +58,7 @@ class AuthController extends GetxController {
                   username: _username,
                   email: _email,
                   imageUrl: imageUrl,
+                  posts: 0,
                 ),
               )
                   .then((value) {

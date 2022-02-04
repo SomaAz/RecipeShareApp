@@ -245,14 +245,23 @@ class _StaticRecipeCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  recipe.name,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    // color: Colors.b,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      recipe.name,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        // color: Colors.b,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                    Text(
+                      recipe.category,
+                      style: TextStyle(fontSize: 15, color: Colors.grey),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 8),
                 Row(

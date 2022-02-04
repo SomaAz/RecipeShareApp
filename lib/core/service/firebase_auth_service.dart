@@ -60,18 +60,23 @@ class FirebaseAuthService {
     }
   }
 
-  Future<String> getCurrentUserUid() async {
+  String getCurrentUserUid() {
     try {
       return _firebaseAuth.currentUser!.uid;
     } on FirebaseAuthException catch (e) {
       print(e.code);
-      return Future.error(e.code);
+      rethrow;
+
+      // return Future.error(e.code);
     } on FirebaseException catch (e) {
       print(e.code);
-      return Future.error(e.code);
+      rethrow;
+      // return Future.error(e.code);
     } catch (e) {
       print(e);
-      return Future.error(e);
+      rethrow;
+
+      // return Future.error(e);
     }
   }
 

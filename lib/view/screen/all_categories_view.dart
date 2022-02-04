@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:recipes_sharing_app/core/service/firestore_service.dart';
 import 'package:recipes_sharing_app/model/cateogry_model.dart';
@@ -37,7 +36,7 @@ class AllCategoriesView extends StatelessWidget {
                       Text(
                         "Categories",
                         style: TextStyle(
-                          fontSize: 26,
+                          fontSize: 28,
                           fontWeight: FontWeight.w600,
                           color: Colors.grey.shade900,
                         ),

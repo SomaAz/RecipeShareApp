@@ -31,7 +31,7 @@ class PopularRecipesView extends StatelessWidget {
                     Text(
                       "Popular Recipes",
                       style: TextStyle(
-                        fontSize: 26,
+                        fontSize: 28,
                         fontWeight: FontWeight.w600,
                         color: Colors.grey.shade900,
                       ),
