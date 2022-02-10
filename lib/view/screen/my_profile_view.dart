@@ -101,7 +101,7 @@ class MyProfileView extends GetWidget<ProfileViewController> {
                                 //   ),
                                 // ),
                                 Text(
-                                  "posts: ${controller.userData!.posts}",
+                                  "posts: ${controller.postedRecipes.length}",
                                   style: TextStyle(
                                     color: Colors.grey.shade700,
                                     fontWeight: FontWeight.w500,

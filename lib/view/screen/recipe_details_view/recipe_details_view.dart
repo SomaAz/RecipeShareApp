@@ -329,7 +329,7 @@ class RecipeDetailsView extends GetWidget<RecipeDetailsViewController> {
                                       ),
                                       SizedBox(width: 5),
                                       Text(
-                                        "${recipe.ingredients[index]["ingredient"]}",
+                                        recipe.ingredients[index].ingredient,
                                         style: TextStyle(
                                             color: Colors.grey.shade700),
                                       ),

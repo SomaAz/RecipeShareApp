@@ -126,8 +126,8 @@ class IngredientsView extends GetWidget<RecipeDetailsViewController> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(recipe.ingredients[index]["ingredient"]!),
-                                Text(recipe.ingredients[index]["quantity"]!),
+                                Text(recipe.ingredients[index].ingredient),
+                                Text(recipe.ingredients[index].quantity),
                               ],
                             ),
                           ),

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:recipes_sharing_app/model/ingredient_model.dart';
 
 class RecipeModel {
   final String id;
@@ -17,7 +18,7 @@ class RecipeModel {
   final List<String> images;
   final List<String> tags;
   final List<String> steps;
-  final List<Map<String, String>> ingredients;
+  final List<IngredientModel> ingredients;
 
   const RecipeModel({
     required this.id,
@@ -46,15 +47,19 @@ class RecipeModel {
       double.parse((data['priceRange'] as String).split("-")[0]),
       double.parse((data['priceRange'] as String).split("-")[1]),
     );
-    data['ingredients'] =
-        (data['ingredients'] as List).cast<String>().map((ing) {
-      final ingList = ing.split(">");
+    data["ingredients"] = (data["ingredients"] as List)
+        .cast<String>()
+        .map((ingredient) => IngredientModel.fromString(ingredient))
+        .toList();
+    // data['ingredients'] =
+    //     (data['ingredients'] as List).cast<String>().map((ing) {
+    //   final ingList = ing.split(">");
 
-      return {
-        "ingredient": ingList[0],
-        "quantity": ingList[1],
-      };
-    }).toList();
+    //   return {
+    //     "ingredient": ingList[0],
+    //     "quantity": ingList[1],
+    //   };
+    // }).toList();
     return RecipeModel(
       id: data["id"],
       name: data["name"],

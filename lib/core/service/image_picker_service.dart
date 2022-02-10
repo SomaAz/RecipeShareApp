@@ -3,14 +3,20 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImagePickerService {
+  Future<XFile?> _pickImage(ImageSource source) async {
+    return (await ImagePicker().pickImage(source: source, imageQuality: 55));
+  }
+
   Future<XFile?> pickImageFromGallery() async {
-    return await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 55);
+    return await _pickImage(ImageSource.gallery);
   }
 
   Future<XFile?> pickImageFromCamera() async {
-    return await ImagePicker()
-        .pickImage(source: ImageSource.camera, imageQuality: 55);
+    return await _pickImage(ImageSource.camera);
+  }
+
+  Future<List<XFile>?> pickMultipeImages() async {
+    return await ImagePicker().pickMultiImage(imageQuality: 55);
   }
 
   void showImagePickerDialog(void Function(XFile? pickedImage) onPick) {
